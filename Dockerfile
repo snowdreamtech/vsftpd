@@ -6,9 +6,9 @@ ENV FTP_ROOT_PASSWORD=
 
 RUN apk add --no-cache vsftpd
 
-EXPOSE 21
+EXPOSE 21 20
 
-COPY vsftpd.conf /etc/vsftpd/
+COPY vsftpd/* /etc/vsftpd/
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
