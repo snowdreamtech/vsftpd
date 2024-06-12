@@ -1,32 +1,48 @@
 #!/bin/sh
 set -e
 
+FTP_CONFIG_PATH=/etc/vsftpd/vsftpd.conf
+
+if [ -n "$FTP_MODE" ]; then
+    if [ "$FTP_MODE" == "anonymous" ]; then
+        FTP_CONFIG_PATH=/etc/vsftpd/vsftpd_anonymous.conf
+    elif [ "$FTP_MODE" == "user" ]; then
+        FTP_CONFIG_PATH=/etc/vsftpd/vsftpd_user.conf
+    elif [ "$FTP_MODE" == "virtual" ]; then
+        FTP_CONFIG_PATH=/etc/vsftpd/vsftpd_virtual.conf
+    else
+        FTP_CONFIG_PATH=/etc/vsftpd/vsftpd.conf
+    fi
+else
+    FTP_CONFIG_PATH=/etc/vsftpd/vsftpd.conf
+fi
+
 # change the password for root
 if [ -n "$FTP_ROOT_PASSWORD" ]; then
-    echo "root:$FTP_ROOT_PASSWORD" | chpasswd > /dev/null 2>&1
+    echo "root:$FTP_ROOT_PASSWORD" | chpasswd >/dev/null 2>&1
 fi
 
 # passive
 # pasv_address
 if [ -n "$PASV_ADDRESS" ]; then
-    sed -i "/pasv_address/d" /etc/vsftpd/vsftpd.conf
-    echo -e "\npasv_address=$PASV_ADDRESS" >> /etc/vsftpd/vsftpd.conf
+    sed -i "/pasv_address/d" $FTP_CONFIG_PATH
+    echo -e "\npasv_address=$PASV_ADDRESS" >>$FTP_CONFIG_PATH
 fi
 
 # pasv_min_port
 if [ -n "$PASV_MIN_PORT" ]; then
-    sed -i "/pasv_min_port/d" /etc/vsftpd/vsftpd.conf
-    echo -e "\npasv_min_port=$PASV_MIN_PORT" >> /etc/vsftpd/vsftpd.conf
+    sed -i "/pasv_min_port/d" $FTP_CONFIG_PATH
+    echo -e "\npasv_min_port=$PASV_MIN_PORT" >>$FTP_CONFIG_PATH
 fi
 
 # pasv_max_port
 if [ -n "$PASV_MAX_PORT" ]; then
-    sed -i "/pasv_max_port/d" /etc/vsftpd/vsftpd.conf
-    echo -e "\npasv_max_port=$PASV_MAX_PORT" >> /etc/vsftpd/vsftpd.conf
+    sed -i "/pasv_max_port/d" $FTP_CONFIG_PATH
+    echo -e "\npasv_max_port=$PASV_MAX_PORT" >>$FTP_CONFIG_PATH
 fi
 
 # start vsftpd
-/usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+/usr/sbin/vsftpd $FTP_CONFIG_PATH
 
 # wait
 wait
