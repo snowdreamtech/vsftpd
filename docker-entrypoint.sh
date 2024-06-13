@@ -22,6 +22,15 @@ if [ -n "$FTP_ROOT_PASSWORD" ]; then
     echo "root:$FTP_ROOT_PASSWORD" | chpasswd >/dev/null 2>&1
 fi
 
+# adduser for vsftp
+if [ -n "$FTP_USER" ] && [ -n "$FTP_PASS" ]; then
+    if id -u $FTP_USER >/dev/null 2>&1 ; then
+        echo "$FTP_USER:$FTP_PASS" | chpasswd >/dev/null 2>&1
+    else
+        echo -e "$FTP_PASS\n$FTP_PASS" | adduser -h /home/$FTP_USER -s /sbin/nologin $FTP_USER
+    fi
+fi
+
 # passive
 # pasv_address
 if [ -n "$PASV_ADDRESS" ]; then
