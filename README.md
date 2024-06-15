@@ -6,12 +6,22 @@ Docker Image packaging for vsftpd. (amd64, arm32v6, arm32v7, arm64v8, i386, ppc6
 
 # Run
 
-```bash
-docker run --rm snowdreamtech/vsftpd:latest
-```
+## Anonymous
 
 ```bash
-docker run -e TZ=Asia/Shanghai --rm snowdreamtech/vsftpd:latest
+docker run --restart=always -d -e FTP_MODE=anonymous -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/var/lib/ftp/Downloads --name vsftpd snowdreamtech/vsftpd:latest
+```
+
+## User
+
+```bash
+docker run --restart=always -d -e FTP_MODE=user -e FTP_USER=abcdef -e FTP_PASS="&abcdef0&" -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/root/Downloads -v ./Downloads:/home/abcdef/Downloads --name vsftpd snowdreamtech/vsftpd:latest
+```
+
+## User
+
+```bash
+docker run --restart=always -d  -e FTP_MODE=virtual -e FTP_USER=abcdef -e FTP_PASS="&abcdef0&" -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/home/virtual/abcdef/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
 # Development
