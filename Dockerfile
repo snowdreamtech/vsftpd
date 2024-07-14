@@ -24,7 +24,8 @@ ENV FTP_ROOT_PASSWORD= \
     PASV_MIN_PORT= \
     PASV_MAX_PORT=
 
-RUN apk add --no-cache vsftpd openssl
+RUN apk add --no-cache vsftpd=3.0.5-r2 \
+    openssl
 
 COPY --from=builder /workspace/pam_pwdfile.so /lib/security/
 

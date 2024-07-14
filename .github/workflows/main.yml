@@ -53,12 +53,10 @@ jobs:
             push: true
             tags: |
               snowdreamtech/vsftpd:latest
-              snowdreamtech/vsftpd:3.0.5-r2
               snowdreamtech/vsftpd:3.0.5
               snowdreamtech/vsftpd:3.0
               snowdreamtech/vsftpd:3
               ghcr.io/snowdreamtech/vsftpd:latest
-              ghcr.io/snowdreamtech/vsftpd:3.0.5-r2
               ghcr.io/snowdreamtech/vsftpd:3.0.5
               ghcr.io/snowdreamtech/vsftpd:3.0
               ghcr.io/snowdreamtech/vsftpd:3
