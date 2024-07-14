@@ -84,5 +84,5 @@ fi
 # start vsftpd
 /usr/sbin/vsftpd $FTP_CONFIG_PATH
 
-# wait
-wait
+# exec commands
+exec "$@"
