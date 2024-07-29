@@ -1,4 +1,4 @@
-FROM snowdreamtech/build-essential:3.20.0 AS builder
+FROM snowdreamtech/build-essential:3.20.2 AS builder
 
 ENV LIBPAM_PWDFILE_VERSION 1.0
 
@@ -12,7 +12,7 @@ RUN apk add --no-cache linux-pam-dev  \
     && cp pam_pwdfile.so ../
 
 
-FROM snowdreamtech/alpine:3.20.0
+FROM snowdreamtech/alpine:3.20.2
 
 LABEL maintainer="snowdream <sn0wdr1am@qq.com>"
 
