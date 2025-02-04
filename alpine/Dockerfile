@@ -1,4 +1,4 @@
-FROM snowdreamtech/build-essential:3.21.0 AS builder
+FROM snowdreamtech/build-essential:3.21.0-alpine3.21 AS builder
 
 # Switch to the user
 USER root
@@ -15,6 +15,8 @@ RUN apk add --no-cache linux-pam-dev  \
     && make \
     && cp pam_pwdfile.so /root
 
+
+    
 FROM snowdreamtech/alpine:3.21.0
 
 # OCI annotations to image

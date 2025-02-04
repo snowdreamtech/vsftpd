@@ -1,3 +1,30 @@
+FROM snowdreamtech/build-essential:12.8.0-bookworm AS builder
+
+# Switch to the user
+USER root
+
+# Set the workdir
+WORKDIR /root
+
+ENV LIBPAM_PWDFILE_VERSION 1.0
+
+RUN set -eux \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
+    libpam0g-dev \
+    && wget https://github.com/tiwe-de/libpam-pwdfile/archive/refs/tags/v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
+    && tar zxvf v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
+    && cd libpam-pwdfile-${LIBPAM_PWDFILE_VERSION}  \ 
+    && make \
+    && cp pam_pwdfile.so /root \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/*
+
+
+
 FROM snowdreamtech/debian:12.8.0
 
 # OCI annotations to image
@@ -23,6 +50,15 @@ ENV KEEPALIVE=1 \
     # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0
+
+ENV VSFTPD_VERSION=3.0.3-13+b2 \
+    FTP_ROOT_PASSWORD= \
+    FTP_USER= \
+    FTP_PASS= \
+    FTP_MODE= \
+    PASV_ADDRESS= \
+    PASV_MIN_PORT= \
+    PASV_MAX_PORT=
 
 ARG GID=1000 \
     UID=1000  \
@@ -55,15 +91,21 @@ RUN set -eux \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* 
 
+COPY --chown=${USER}:${USER} pam.d/* /etc/pam.d/
+
+COPY --chown=${USER}:${USER} vsftpd/* /etc/vsftpd/
+    
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
-    vim \
+    vsftpd=${VSFTPD_VERSION} \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
+
+COPY --chown=${USER}:${USER} --from=builder /root/pam_pwdfile.so /lib/security/
 
 # Switch to the user
 USER ${USER}
@@ -71,6 +113,8 @@ USER ${USER}
 # Set the workdir
 WORKDIR ${WORKDIR}
 
-COPY docker-entrypoint.sh /usr/local/bin/
+EXPOSE 21 20
+
+COPY --chown=${USER}:${USER} docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]

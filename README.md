@@ -8,55 +8,24 @@ Docker Image packaging for Vsftpd. (amd64, arm32v5,  arm32v6, arm32v7, arm64v8, 
 
 To help you get started creating a container from this image you can either use docker-compose or the docker cli.
 
-## Docker Cli
+# Run
 
-### Simple
+## Anonymous
 
 ```bash
-docker run -d \
-  --name=base \
-  -e TZ=Asia/Shanghai \
-  --restart unless-stopped \
-  snowdreamtech/vsftpd:latest
+docker run --restart=always -d -e FTP_MODE=anonymous -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/var/lib/ftp/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
-### Advance
+## User
 
 ```bash
-docker run -d \
-  --name=base \
-  -e TZ=Asia/Shanghai \
-  -v /path/to/data:/path/to/data \
-  --restart unless-stopped \
-  snowdreamtech/vsftpd:latest
+docker run --restart=always -d -e FTP_MODE=user -e FTP_USER=abcdef -e FTP_PASS="&abcdef0&" -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/root/Downloads -v ./Downloads:/home/abcdef/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
-## Docker Compose
-
-### Simple
+## User
 
 ```bash
-services:
-  base:
-    image: snowdreamtech/vsftpd:latest
-    container_name: base
-    environment:
-      - TZ=Asia/Shanghai
-    restart: unless-stopped
-```
-
-### Advance
-
-```bash
-services:
-  base:
-    image: snowdreamtech/vsftpd:latest
-    container_name: base
-    environment:
-      - TZ=Asia/Shanghai
-    volumes:
-      - /path/to/data:/path/to/data
-    restart: unless-stopped
+docker run --restart=always -d  -e FTP_MODE=virtual -e FTP_USER=abcdef -e FTP_PASS="&abcdef0&" -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/home/virtual/abcdef/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
 # Development
