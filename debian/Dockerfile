@@ -62,8 +62,8 @@ ENV VSFTPD_VERSION=3.0.3-13+b2 \
 
 ARG GID=1000 \
     UID=1000  \
-    USER=base \
-    WORKDIR=/home/base
+    USER=root \
+    WORKDIR=/root
 
 # Create a user with UID and GID
 RUN set -eux \

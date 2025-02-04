@@ -54,8 +54,8 @@ ENV VSFTPD_VERSION=3.0.5-r2 \
 
 ARG GID=1000 \
     UID=1000  \
-    USER=base \
-    WORKDIR=/home/base
+    USER=root \
+    WORKDIR=/root
 
 # Create a user with UID and GID
 RUN if [ "${USER}" != "root" ]; then \
