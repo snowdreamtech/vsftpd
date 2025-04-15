@@ -1,4 +1,4 @@
-FROM snowdreamtech/build-essential:3.21.0-alpine3.21 AS builder
+FROM snowdreamtech/build-essential:3.21.3-alpine3.21 AS builder
 
 # Switch to the user
 USER root
@@ -17,7 +17,7 @@ RUN apk add --no-cache linux-pam-dev  \
 
 
     
-FROM snowdreamtech/alpine:3.21.0
+FROM snowdreamtech/alpine:3.21.3
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \

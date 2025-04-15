@@ -1,4 +1,4 @@
-FROM snowdreamtech/build-essential:12.8.0-bookworm AS builder
+FROM snowdreamtech/build-essential:12.10.0-bookworm AS builder
 
 # Switch to the user
 USER root
@@ -25,7 +25,7 @@ RUN set -eux \
 
 
 
-FROM snowdreamtech/debian:12.8.0
+FROM snowdreamtech/debian:12.10.0
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
