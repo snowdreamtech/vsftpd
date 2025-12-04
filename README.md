@@ -1,72 +1,41 @@
-# Base
+# Vsftpd
 
-![Docker Image Version](https://img.shields.io/docker/v/snowdreamtech/base)
-![Docker Image Size](https://img.shields.io/docker/image-size/snowdreamtech/base/latest)
-![Docker Pulls](https://img.shields.io/docker/pulls/snowdreamtech/base)
-![Docker Stars](https://img.shields.io/docker/stars/snowdreamtech/base)
+![Docker Image Version](https://img.shields.io/docker/v/snowdreamtech/vsftpd)
+![Docker Image Size](https://img.shields.io/docker/image-size/snowdreamtech/vsftpd/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/snowdreamtech/vsftpd)
+![Docker Stars](https://img.shields.io/docker/stars/snowdreamtech/vsftpd)
 
-Docker Image packaging for Base. (amd64, arm32v5,  arm32v6, arm32v7, arm64v8, i386, mips64le, ppc64le,riscv64, s390x)
+Docker Image packaging for Vsftpd. (amd64, arm32v5,  arm32v6, arm32v7, arm64v8, i386, mips64le, ppc64le,riscv64, s390x)
 
 # Usage
 
 To help you get started creating a container from this image you can either use docker-compose or the docker cli.
 
-## Docker Cli
+# Run
 
-### Simple
+## Anonymous
 
 ```bash
-docker run -d \
-  --name=base \
-  -e TZ=Asia/Shanghai \
-  --restart unless-stopped \
-  snowdreamtech/base:latest
+docker run --restart=always -d -e FTP_MODE=anonymous -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/var/lib/ftp/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
-### Advance
+## User
 
 ```bash
-docker run -d \
-  --name=base \
-  -e TZ=Asia/Shanghai \
-  -v /path/to/data:/path/to/data \
-  --restart unless-stopped \
-  snowdreamtech/base:latest
+docker run --restart=always -d -e FTP_MODE=user -e FTP_USER=abcdef -e FTP_PASS="&abcdef0&" -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/root/Downloads -v ./Downloads:/home/abcdef/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
-## Docker Compose
-
-### Simple
+## User
 
 ```bash
-services:
-  base:
-    image: snowdreamtech/base:latest
-    container_name: base
-    environment:
-      - TZ=Asia/Shanghai
-    restart: unless-stopped
-```
-
-### Advance
-
-```bash
-services:
-  base:
-    image: snowdreamtech/base:latest
-    container_name: base
-    environment:
-      - TZ=Asia/Shanghai
-    volumes:
-      - /path/to/data:/path/to/data
-    restart: unless-stopped
+docker run --restart=always -d  -e FTP_MODE=virtual -e FTP_USER=abcdef -e FTP_PASS="&abcdef0&" -e FTP_ROOT_PASSWORD=123456 -e PASV_ADDRESS=192.168.1.1(server ip) -p 21:21 -p 20:20 -p 20000-20010:20000-20010 -v ./Downloads:/home/virtual/abcdef/Downloads --name vsftpd snowdreamtech/vsftpd:latest
 ```
 
 # Development
 
 ```bash
 docker buildx create --use --name build --node build --driver-opt network=host
-docker buildx build -t snowdreamtech/base --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x . --push
+docker buildx build -t snowdreamtech/vsftpd --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x . --push
 ```
 
 ## Reference
@@ -78,7 +47,7 @@ docker buildx build -t snowdreamtech/base --platform=linux/386,linux/amd64,linux
 1. [Faster Multi-Platform Builds: Dockerfile Cross-Compilation Guide](https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/)
 1. [docker/buildx](https://github.com/docker/buildx)
 
-## Contact (备注：base)
+## Contact (备注：vsftpd)
 
 * Email: sn0wdr1am@qq.com
 * QQ: 3217680847
