@@ -6,7 +6,7 @@ USER root
 # Set the workdir
 WORKDIR /root
 
-ENV LIBPAM_PWDFILE_VERSION 1.0
+ENV LIBPAM_PWDFILE_VERSION=1.0
 
 RUN apk add --no-cache linux-pam-dev  \ 
     && wget https://github.com/tiwe-de/libpam-pwdfile/archive/refs/tags/v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
