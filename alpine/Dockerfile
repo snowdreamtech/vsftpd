@@ -1,3 +1,22 @@
+FROM snowdreamtech/build-essential:3.22.2-alpine3.22 AS builder
+
+# Switch to the user
+USER root
+
+# Set the workdir
+WORKDIR /root
+
+ENV LIBPAM_PWDFILE_VERSION 1.0
+
+RUN apk add --no-cache linux-pam-dev  \ 
+    && wget https://github.com/tiwe-de/libpam-pwdfile/archive/refs/tags/v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
+    && tar zxvf v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
+    && cd libpam-pwdfile-${LIBPAM_PWDFILE_VERSION}  \ 
+    && make \
+    && cp pam_pwdfile.so /root
+
+    
+
 FROM snowdreamtech/alpine:3.22.2
 
 # OCI annotations to image
@@ -48,6 +67,15 @@ ENV KEEPALIVE=${KEEPALIVE} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
+ENV VSFTPD_VERSION=3.0.5-r2 \
+    FTP_ROOT_PASSWORD= \
+    FTP_USER= \
+    FTP_PASS= \
+    FTP_MODE= \
+    PASV_ADDRESS= \
+    PASV_MIN_PORT= \
+    PASV_MAX_PORT=
+
 # Create a user with PUID and PGID
 RUN if [ "${USER}" != "root" ] && [ ! -d "/home/${USER}" ] && [ "${PUID}" -ne 0 ] && [ "${PGID}" -ne 0 ]; then \
     addgroup -g ${PGID} ${USER}; \
@@ -55,14 +83,22 @@ RUN if [ "${USER}" != "root" ] && [ ! -d "/home/${USER}" ] && [ "${PUID}" -ne 0 
     # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
     fi
 
+COPY pam.d/* /etc/pam.d/
+
+COPY vsftpd/* /etc/vsftpd/
+
+COPY --from=builder /root/pam_pwdfile.so /lib/security/
+
 RUN apk update \
     && apk add --no-cache \
-    vim
+    vsftpd=${VSFTPD_VERSION}
 
 # Enable CAP_NET_BIND_SERVICE
 # RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
     # setcap 'cap_net_bind_service=+ep' `which nginx`; \
     # fi
+    
+EXPOSE 21 20
 
 COPY entrypoint.d /usr/local/bin/entrypoint.d
 
