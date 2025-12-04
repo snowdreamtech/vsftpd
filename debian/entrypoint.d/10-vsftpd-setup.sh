@@ -16,10 +16,10 @@ if [ -n "$FTP_MODE" ]; then
 
         # adduser for vsftp
         if [ -n "$FTP_USER" ] && [ -n "$FTP_PASS" ]; then
-            if id -u $FTP_USER >/dev/null 2>&1; then
+            if id -u "$FTP_USER" >/dev/null 2>&1; then
                 echo "$FTP_USER:$FTP_PASS" | chpasswd >/dev/null 2>&1
             else
-                echo -e "$FTP_PASS\n$FTP_PASS" | adduser -h /home/$FTP_USER -s /sbin/nologin $FTP_USER >/dev/null 2>&1
+                echo -e "$FTP_PASS\n$FTP_PASS" | adduser -h /home/"$FTP_USER" -s /sbin/nologin "$FTP_USER" >/dev/null 2>&1
             fi
         fi
     elif [ "$FTP_MODE" == "virtual" ]; then
@@ -48,9 +48,9 @@ if [ -n "$FTP_MODE" ]; then
             HASHED_FTP_USER_PASSWORD=$(echo -e "$FTP_PASS" | openssl passwd -1 -stdin)
             echo "$FTP_USER:$HASHED_FTP_USER_PASSWORD" >>$FTP_PASSWD_PATH
 
-            if [ ! -d $FTP_VIRTUAL_HOME/$FTP_USER ]; then
-                mkdir -p $FTP_VIRTUAL_HOME/$FTP_USER
-                chown -R virtual:virtual $FTP_VIRTUAL_HOME/$FTP_USER
+            if [ ! -d $FTP_VIRTUAL_HOME/"$FTP_USER" ]; then
+                mkdir -p $FTP_VIRTUAL_HOME/"$FTP_USER"
+                chown -R virtual:virtual $FTP_VIRTUAL_HOME/"$FTP_USER"
             fi
         fi
     else
