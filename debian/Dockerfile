@@ -12,7 +12,7 @@ RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
     libpam0g-dev \
-    libxcrypt-dev \
+    libcrypt-dev \
     && wget https://github.com/tiwe-de/libpam-pwdfile/archive/refs/tags/v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
     && tar zxvf v${LIBPAM_PWDFILE_VERSION}.tar.gz  \ 
     && cd libpam-pwdfile-${LIBPAM_PWDFILE_VERSION}  \ 
