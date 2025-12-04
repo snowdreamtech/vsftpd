@@ -31,10 +31,10 @@ if [ -n "$FTP_MODE" ]; then
         fi
 
         # change the password for root
-        if [ -n "$FTP_ROOT_PASSWORD" ]; then
+        if [ -n "$FTP_ROOT_PWD" ]; then
             sed -i "/^root:/d" $FTP_PASSWD_PATH
-            HASHED_FTP_ROOT_PASSWORD=$(echo -e "$FTP_ROOT_PASSWORD" | openssl passwd -1 -stdin)
-            echo "root:$HASHED_FTP_ROOT_PASSWORD" >>$FTP_PASSWD_PATH
+            HASHED_FTP_ROOT_PWD=$(echo -e "$FTP_ROOT_PWD" | openssl passwd -1 -stdin)
+            echo "root:$HASHED_FTP_ROOT_PWD" >>$FTP_PASSWD_PATH
 
             if [ ! -d $FTP_VIRTUAL_HOME/root ]; then
                 mkdir -p $FTP_VIRTUAL_HOME/root
@@ -61,8 +61,8 @@ else
 fi
 
 # change the password for root
-if [ -n "$FTP_ROOT_PASSWORD" ]; then
-    echo "root:$FTP_ROOT_PASSWORD" | chpasswd >/dev/null 2>&1
+if [ -n "$FTP_ROOT_PWD" ]; then
+    echo "root:$FTP_ROOT_PWD" | chpasswd >/dev/null 2>&1
 fi
 
 # passive
