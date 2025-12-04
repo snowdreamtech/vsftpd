@@ -36,7 +36,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/vsftpd" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="12.8" \
+    org.opencontainers.image.version="3.0.5" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/vsftpd"
 
 # Switch to the user
@@ -77,7 +77,7 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
-ENV VSFTPD_VERSION=3.0.3-13+b2 \
+ENV VSFTPD_VERSION=3.0.5-0.2 \
     FTP_ROOT_PWD= \
     FTP_USER= \
     FTP_PASS= \

@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/vsftpd" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="3.21.0" \
+    org.opencontainers.image.version="3.0.5" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/vsftpd"
     
 # Switch to the user
