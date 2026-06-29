@@ -483,26 +483,37 @@ jobs:
                 ;;
             esac
 
-            # Execute comprehensive test suite
-            if docker run --rm \
-              -e DEBUG=false \
-              -e KEEPALIVE=0 \
+            # Execute comprehensive test suite by running container in background
+            # This is necessary because KEEPALIVE=1 blocks foreground execution
+            local container_id
+            container_id=$(docker run -d --rm \
+              -e DEBUG=true \
               -e TZ=Asia/Shanghai \
               -e PUID=1000 \
               -e PGID=1000 \
-              "${tag}" \
+              "${tag}")
+
+            # Wait for initialization
+            sleep 3
+
+            # Run checks inside the running container
+            if docker exec "${container_id}" \
               sh -c "
                 echo '  ✓ Entrypoint execution: OK' && \
                 printf '  ✓ Timezone: ' && date '+%Z %z' && \
                 printf '  ✓ User context: ' && id -un && \
+                printf '  ✓ vsftpd process: ' && ps -ef | grep '[v]sftpd' >/dev/null && echo 'running' && \
                 printf '  ✓ vsftpd: ' && vsftpd -v && \
                 printf '  ✓ Package manager: ' && \
                 ${pkg_check} && echo 'functional' && \
                 echo '  ✓ All checks passed'
               "; then
+              docker stop "${container_id}" >/dev/null 2>&1 || true
               return 0
             else
               echo "  ✗ Smoke test failed for ${registry_name}"
+              docker logs "${container_id}" || true
+              docker stop "${container_id}" >/dev/null 2>&1 || true
               return 1
             fi
           }

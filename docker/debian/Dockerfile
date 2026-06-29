@@ -73,10 +73,6 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     PASV_MIN_PORT= \
     PASV_MAX_PORT=
 
-COPY pam.d/* /etc/pam.d/
-COPY vsftpd/* /etc/vsftpd/
-COPY --from=builder /root/pam_pwdfile.so /lib/security/
-
 # Additional tooling and configuration for Base image
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get update -qqy \
@@ -86,6 +82,10 @@ RUN set -eux \
     && apt-get autoremove -qqy \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY pam.d/* /etc/pam.d/
+COPY vsftpd/* /etc/vsftpd/
+COPY --from=builder /root/pam_pwdfile.so /lib/security/
 
 # Container Orchestration Files
 COPY entrypoint.d /usr/local/bin/entrypoint.d

@@ -75,17 +75,17 @@ ENV KEEPALIVE=${KEEPALIVE} \
     PASV_MIN_PORT= \
     PASV_MAX_PORT=
 
-COPY pam.d/* /etc/pam.d/
-COPY vsftpd/* /etc/vsftpd/
-COPY --from=builder /root/pam_pwdfile.so /lib/security/
-
 # Additional tooling and configuration for Base image
-RUN dnf makecache \
-    && dnf -y install \
+RUN set -eux \
+    && dnf install -y \
     vim \
     vsftpd-${VSFTPD_VERSION} \
     && dnf clean all \
     && rm -rf /var/cache/dnf/*
+
+COPY pam.d/* /etc/pam.d/
+COPY vsftpd/* /etc/vsftpd/
+COPY --from=builder /root/pam_pwdfile.so /lib64/security/
 
 # Container Orchestration Files
 COPY entrypoint.d /usr/local/bin/entrypoint.d
