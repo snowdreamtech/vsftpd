@@ -345,6 +345,7 @@ project/boot/
 ### C / C++ ###
 *.d
 !**/entrypoint.d/
+!**/pam.d/
 *.o
 *.ko
 *.obj
