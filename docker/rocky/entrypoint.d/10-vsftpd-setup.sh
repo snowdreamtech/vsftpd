@@ -84,4 +84,4 @@ if [ -n "$PASV_MAX_PORT" ]; then
     echo -e "\npasv_max_port=$PASV_MAX_PORT" >>$FTP_CONFIG_PATH
 fi
 
-if [ "$DEBUG" = "true" ]; then echo "→ [vsftpd] Vsftpd has been set up."; fi    
+if [ "$DEBUG" = "true" ]; then echo "→ [vsftpd] Vsftpd has been set up."; fi
