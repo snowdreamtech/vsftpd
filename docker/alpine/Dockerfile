@@ -43,12 +43,13 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/vsftpd" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-# x-release-please-start-version
-    org.opencontainers.image.version="${VERSION:-3.0.5}" \
-# x-release-please-end
     org.opencontainers.image.created="${BUILDTIME}" \
     org.opencontainers.image.revision="${REVISION}" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/vsftpd"
+
+# x-release-please-start-version
+LABEL org.opencontainers.image.version="${VERSION:-3.0.5}"
+# x-release-please-end
 
 # Runtime Environment Configuration
 ENV KEEPALIVE=${KEEPALIVE} \
