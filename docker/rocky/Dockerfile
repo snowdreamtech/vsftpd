@@ -1,13 +1,29 @@
 # Base Image (Rocky Variant)
 # Extends snowdreamtech/rocky with additional tooling and configuration.
 
+FROM ghcr.io/snowdreamtech/rocky:10.2.0 AS builder
+
+USER root
+WORKDIR /root
+
+RUN dnf makecache \
+    && dnf -y install \
+    make \
+    gcc \
+    pam-devel \
+    git \
+    && git clone https://git.tiwe.de/libpam-pwdfile.git \
+    && cd libpam-pwdfile \
+    && make \
+    && cp pam_pwdfile.so /root
+
 FROM ghcr.io/snowdreamtech/rocky:10.2.0
 
 # Build-time Configuration
 ARG BUILDTIME \
     VERSION \
     REVISION \
-    KEEPALIVE=0 \
+    KEEPALIVE=1 \
     CAP_NET_BIND_SERVICE=0 \
     LANG=C.UTF-8 \
     UMASK=022 \
@@ -16,21 +32,24 @@ ARG BUILDTIME \
     PGID=0 \
     PUID=0 \
     USER=root \
-    WORKDIR=/root
+    WORKDIR=/root \
+    VSFTPD_VERSION=3.0.5
 
 # Standard OCI Metadata (https://github.com/opencontainers/image-spec)
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
-    org.opencontainers.image.title="Base Image Based On Rocky" \
-    org.opencontainers.image.description="Docker Images for Base on Rocky. (i386, amd64, arm32v5, arm32v7, arm64, mips64le, ppc64le, s390x)" \
-    org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/base" \
-    org.opencontainers.image.base.name="snowdreamtech/base:rocky" \
+    org.opencontainers.image.title="Vsftpd Image Based On Rocky" \
+    org.opencontainers.image.description="Docker Images for Vsftpd on Rocky. (amd64, arm64)" \
+    org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/vsftpd" \
+    org.opencontainers.image.base.name="snowdreamtech/rocky:10.2.0" \
     org.opencontainers.image.licenses="MIT" \
-    org.opencontainers.image.source="https://github.com/snowdreamtech/base" \
+    org.opencontainers.image.source="https://github.com/snowdreamtech/vsftpd" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="${VERSION:-10.2.0}" \
+# x-release-please-start-version
+    org.opencontainers.image.version="${VERSION:-3.0.5}" \
+# x-release-please-end
     org.opencontainers.image.created="${BUILDTIME}" \
     org.opencontainers.image.revision="${REVISION}" \
-    org.opencontainers.image.url="https://github.com/snowdreamtech/base"
+    org.opencontainers.image.url="https://github.com/snowdreamtech/vsftpd"
 
 # Runtime Environment Configuration
 ENV KEEPALIVE=${KEEPALIVE} \
@@ -42,23 +61,34 @@ ENV KEEPALIVE=${KEEPALIVE} \
     PGID=${PGID} \
     PUID=${PUID} \
     USER=${USER} \
-    WORKDIR=${WORKDIR}
+    WORKDIR=${WORKDIR} \
+    VSFTPD_VERSION=${VSFTPD_VERSION} \
+    FTP_ROOT_PWD= \
+    FTP_USER= \
+    FTP_PASS= \
+    FTP_MODE= \
+    PASV_ADDRESS= \
+    PASV_MIN_PORT= \
+    PASV_MAX_PORT=
+
+COPY pam.d/* /etc/pam.d/
+COPY vsftpd/* /etc/vsftpd/
+COPY --from=builder /root/pam_pwdfile.so /lib/security/
 
 # Additional tooling and configuration for Base image
-RUN set -eux \
-    && dnf -y --allowerasing update \
-    && dnf -y --allowerasing install \
-    vim-enhanced \
-    && dnf -y --allowerasing autoremove \
-    && dnf -y --allowerasing clean all \
-    && rm -rf /var/cache/dnf \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/*
+RUN dnf makecache \
+    && dnf -y install \
+    vim \
+    vsftpd-${VSFTPD_VERSION} \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf/*
 
 # Container Orchestration Files
 COPY entrypoint.d /usr/local/bin/entrypoint.d
 
 RUN chmod +x /usr/local/bin/entrypoint.d/*
+
+EXPOSE 21 20
 
 # Standard Healthcheck (Verification of core system responsiveness)
 HEALTHCHECK NONE
