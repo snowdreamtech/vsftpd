@@ -32,13 +32,16 @@ ARG BUILDTIME \
     PGID=0 \
     PUID=0 \
     USER=root \
-    WORKDIR=/root \
-    VSFTPD_VERSION=3.0.5
+    WORKDIR=/root
+
+# x-release-please-start-version
+ARG VSFTPD_VERSION=3.0.5
+# x-release-please-end
 
 # Standard OCI Metadata (https://github.com/opencontainers/image-spec)
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.title="Vsftpd Image Based On Rocky" \
-    org.opencontainers.image.description="Docker Images for Vsftpd on Rocky. (amd64, arm64)" \
+    org.opencontainers.image.description="Docker Images for Vsftpd on Rocky. (amd64, arm64, ppc64le, s390x)" \
     org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/vsftpd" \
     org.opencontainers.image.base.name="snowdreamtech/rocky:10.2.0" \
     org.opencontainers.image.licenses="MIT" \
