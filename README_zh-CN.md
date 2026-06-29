@@ -1,9 +1,9 @@
-# Base
+# vsftpd
 
-![Docker Image Version](https://img.shields.io/docker/v/snowdreamtech/base)
-![Docker Image Size](https://img.shields.io/docker/image-size/snowdreamtech/base/latest)
-![Docker Pulls](https://img.shields.io/docker/pulls/snowdreamtech/base)
-![Docker Stars](https://img.shields.io/docker/stars/snowdreamtech/base)
+![Docker Image Version](https://img.shields.io/docker/v/snowdreamtech/vsftpd)
+![Docker Image Size](https://img.shields.io/docker/image-size/snowdreamtech/vsftpd/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/snowdreamtech/vsftpd)
+![Docker Stars](https://img.shields.io/docker/stars/snowdreamtech/vsftpd)
 
 Docker 基础模板，提供标准化的容器基础，具有灵活的入口点系统、多架构支持以及跨 Alpine、Debian 和 Rocky Linux 发行版的一致配置模式。
 
@@ -22,8 +22,8 @@ Docker 基础模板作为构建容器化应用程序的基础起点。它提供�
 
 ```bash
 # 拉取并运行默认的 Debian 变体
-docker pull snowdreamtech/base:debian
-docker run -d --name=base -e TZ=Asia/Shanghai snowdreamtech/base:debian
+docker pull snowdreamtech/vsftpd:debian
+docker run -d --name=vsftpd -e TZ=Asia/Shanghai snowdreamtech/vsftpd:debian
 
 # 或使用 docker-compose
 docker-compose up -d
@@ -37,10 +37,10 @@ docker-compose up -d
 
 ```bash
 docker run -d \
-  --name=base \
+  --name=vsftpd \
   -e TZ=Asia/Shanghai \
   --restart unless-stopped \
-  snowdreamtech/base:debian
+  snowdreamtech/vsftpd:debian
 ```
 
 **支持的架构**：i386、amd64、arm32v5、arm32v7、arm64、mips64le、ppc64le、s390x
@@ -53,10 +53,10 @@ docker run -d \
 
 ```bash
 docker run -d \
-  --name=base \
+  --name=vsftpd \
   -e TZ=Asia/Shanghai \
   --restart unless-stopped \
-  snowdreamtech/base:alpine
+  snowdreamtech/vsftpd:alpine
 ```
 
 **支持的架构**：i386、amd64、arm32v6、arm32v7、arm64、ppc64le、riscv64、s390x
@@ -69,10 +69,10 @@ docker run -d \
 
 ```bash
 docker run -d \
-  --name=base \
+  --name=vsftpd \
   -e TZ=Asia/Shanghai \
   --restart unless-stopped \
-  snowdreamtech/base:rocky
+  snowdreamtech/vsftpd:rocky
 ```
 
 **支持的架构**：i386、amd64、arm32v5、arm32v7、arm64、mips64le、ppc64le、s390x
@@ -85,13 +85,13 @@ docker run -d \
 
 ```bash
 # 构建 Debian 变体
-docker build -t snowdreamtech/base:debian ./docker/debian/
+docker build -t snowdreamtech/vsftpd:debian ./docker/debian/
 
 # 构建 Alpine 变体
-docker build -t snowdreamtech/base:alpine ./docker/alpine/
+docker build -t snowdreamtech/vsftpd:alpine ./docker/alpine/
 
 # 构建 Rocky 变体
-docker build -t snowdreamtech/base:rocky ./docker/rocky/
+docker build -t snowdreamtech/vsftpd:rocky ./docker/rocky/
 ```
 
 ### 多架构构建
@@ -105,21 +105,21 @@ docker buildx create --use --name build --node build --driver-opt network=host
 # 为多个架构构建 Debian
 docker buildx build \
   --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x \
-  -t snowdreamtech/base:debian \
+  -t snowdreamtech/vsftpd:debian \
   ./docker/debian/ \
   --push
 
 # 为多个架构构建 Alpine
 docker buildx build \
   --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x \
-  -t snowdreamtech/base:alpine \
+  -t snowdreamtech/vsftpd:alpine \
   ./docker/alpine/ \
   --push
 
 # 为多个架构构建 Rocky
 docker buildx build \
   --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x \
-  -t snowdreamtech/base:rocky \
+  -t snowdreamtech/vsftpd:rocky \
   ./docker/rocky/ \
   --push
 ```
@@ -130,7 +130,7 @@ docker buildx build \
 
 | 变量 | 默认值 | 描述 |
 |----------|---------|-------------|
-| `KEEPALIVE` | `0` | 保持容器运行（1=启用，0=禁用）|
+| `KEEPALIVE` | `1` | 保持容器运行（1=启用，0=禁用）|
 | `CAP_NET_BIND_SERVICE` | `0` | 启用绑定到特权端口（<1024）|
 | `LANG` | `C.UTF-8` | UTF-8 字符支持的区域设置 |
 | `UMASK` | `022` | 默认文件创建掩码 |
@@ -156,7 +156,7 @@ docker build \
   --build-arg PUID=1000 \
   --build-arg PGID=1000 \
   --build-arg USER=appuser \
-  -t snowdreamtech/base:debian-custom \
+  -t snowdreamtech/vsftpd:debian-custom \
   ./docker/debian/
 ```
 
@@ -164,11 +164,11 @@ docker build \
 
 ```bash
 docker run -d \
-  --name=base \
+  --name=vsftpd \
   -e PUID=1000 \
   -e PGID=1000 \
   -e USER=appuser \
-  snowdreamtech/base:debian
+  snowdreamtech/vsftpd:debian
 ```
 
 **注意**：仅当 `PUID≠0`、`PGID≠0` 且 `USER≠root` 时才会创建用户。
@@ -179,9 +179,9 @@ docker run -d \
 
 ```yaml
 services:
-  base:
-    image: snowdreamtech/base:debian
-    container_name: base
+  vsftpd:
+    image: snowdreamtech/vsftpd:debian
+    container_name: vsftpd
     environment:
       - TZ=Asia/Shanghai
     restart: unless-stopped
@@ -191,9 +191,9 @@ services:
 
 ```yaml
 services:
-  base:
-    image: snowdreamtech/base:debian
-    container_name: base
+  vsftpd:
+    image: snowdreamtech/vsftpd:debian
+    container_name: vsftpd
     environment:
       - TZ=Asia/Shanghai
       - DEBUG=true
@@ -209,9 +209,9 @@ services:
 
 示例：
 
-- `snowdreamtech/base:13.5.0-debian`
-- `snowdreamtech/base:3.24.0-alpine`
-- `snowdreamtech/base:10.2.0-rocky`
+- `snowdreamtech/vsftpd:13.5.0-debian`
+- `snowdreamtech/vsftpd:3.24.0-alpine`
+- `snowdreamtech/vsftpd:10.2.0-rocky`
 
 此格式允许：
 
@@ -247,7 +247,7 @@ Docker 在拉取镜像时会自动为您的平台选择适当的架构。
 在派生的 Dockerfile 中创建自定义初始化脚本：
 
 ```dockerfile
-FROM snowdreamtech/base:debian
+FROM snowdreamtech/vsftpd:debian
 
 # 添加您的自定义初始化脚本
 COPY my-init.sh /usr/local/bin/entrypoint.d/20-my-init.sh
@@ -263,7 +263,7 @@ CMD ["/app/start.sh"]
 启用调试输出以排查入口点执行问题：
 
 ```bash
-docker run -e DEBUG=true snowdreamtech/base:debian
+docker run -e DEBUG=true snowdreamtech/vsftpd:debian
 ```
 
 输出示例：
@@ -288,24 +288,24 @@ docker run -e DEBUG=true snowdreamtech/base:debian
 make build
 
 # 构建特定变体
-docker build -t base:debian ./docker/debian/
-docker build -t base:alpine ./docker/alpine/
-docker build -t base:rocky ./docker/rocky/
+docker build -t vsftpd:debian ./docker/debian/
+docker build -t vsftpd:alpine ./docker/alpine/
+docker build -t vsftpd:rocky ./docker/rocky/
 ```
 
 ### 测试
 
 ```bash
 # 测试默认配置
-docker run --rm base:debian id
+docker run --rm vsftpd:debian id
 
 # 测试自定义用户创建
-docker build --build-arg PUID=1000 --build-arg PGID=1000 --build-arg USER=testuser -t base:debian-test ./docker/debian/
-docker run --rm base:debian-test id
+docker build --build-arg PUID=1000 --build-arg PGID=1000 --build-arg USER=testuser -t vsftpd:debian-test ./docker/debian/
+docker run --rm vsftpd:debian-test id
 # 预期输出：uid=1000(testuser) gid=1000(testuser)
 
 # 测试 DEBUG 模式
-docker run --rm -e DEBUG=true base:debian
+docker run --rm -e DEBUG=true vsftpd:debian
 ```
 
 ## 参考资料
@@ -317,7 +317,7 @@ docker run --rm -e DEBUG=true base:debian
 5. [Faster Multi-Platform Builds: Dockerfile Cross-Compilation Guide](https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/)
 6. [docker/buildx](https://github.com/docker/buildx)
 
-## 联系方式（备注：base）
+## 联系方式（备注：vsftpd）
 
 * Email: <sn0wdr1am@qq.com>
 * QQ: 3217680847
