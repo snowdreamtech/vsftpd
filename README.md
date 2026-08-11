@@ -209,9 +209,9 @@ Images follow semantic versioning with the format: `{major}.{minor}.{patch}-{var
 
 Examples:
 
-- `snowdreamtech/vsftpd:13.6.0-debian`
-- `snowdreamtech/vsftpd:3.24.1-alpine`
-- `snowdreamtech/vsftpd:10.2.0-rocky`
+- `snowdreamtech/vsftpd:3.0.5-debian`
+- `snowdreamtech/vsftpd:3.0.5-alpine`
+- `snowdreamtech/vsftpd:3.0.5-rocky`
 
 This format allows:
 
